@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OG Client - Minecraft PvP Client</title>
+    <style>
+        /* ===== RESET ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            background: #0D0D0D;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #FFFFFF;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* ===== TOP BAR ===== */
+        #topBar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 44px;
+            background: linear-gradient(135deg, #0099FF, #FF66B2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 153, 255, 0.3);
+        }
+
+        #topBar .logo {
+            font-size: 20px;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #topBar .logo .sub {
+            font-size: 11px;
+            font-weight: 400;
+            opacity: 0.8;
+        }
+
+        #topBar .status {
+            font-size: 11px;
+            color: #00FF88;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        #topBar .version {
+            font-size: 11px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 4px 12px;
+            border-radius: 12px;
+            color: white;
+        }
+
+        /* ===== GAME CONTAINER ===== */
+        #gameContainer {
+            position: fixed;
+            top: 44px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #000;
+        }
+
+        #gameFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000;
+        }
+
+        /* ===== HUD OVERLAY ===== */
+        #hudOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* ===== TOP LEFT STATS ===== */
+        #topLeft {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hud-item {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            backdrop-filter: blur(4px);
+            border-left: 3px solid #0099FF;
+            color: #FFFFFF;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .hud-item.pink {
+            border-left-color: #FF66B2;
+        }
+
+        /* ===== KEYSTROKES ===== */
+        #keystrokes {
+            position: absolute;
+            bottom: 30px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            pointer-events: none;
+        }
+
+        .key-row {
+            display: flex;
+            gap: 2px;
+        }
+
+        .key {
+            width: 34px;
+            height: 34px;
+            background: rgba(26, 26, 26, 0.9);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            transition: all 0.08s ease;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .key.active {
+            background: rgba(0, 153, 255, 0.7);
+            border-color: #0099FF;
+            color: white;
+            box-shadow: 0 0 25px rgba(0, 153, 255, 0.3);
+            transform: scale(0.92);
+        }
+
+        .key.space {
+            width: 120px;
+            font-size: 11px;
+        }
+
+        /* ===== CPS ===== */
+        #cpsDisplay {
+            position: absolute;
+            bottom: 30px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 8px 18px;
+            border-radius: 6px;
+            font-size: 20px;
+            font-weight: 800;
+            backdrop-filter: blur(4px);
+            border: 2px solid rgba(0, 153, 255, 0.2);
+            pointer-events: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #FFFFFF;
+        }
+
+        #cpsDisplay .cps-num {
+            background: linear-gradient(135deg, #0099FF, #FF66B2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ===== BEDWARS STARS ===== */
+        #bedwarsStars {
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(4px);
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .star-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .star-item .icon {
+            color: #FFD700;
+            font-size: 16px;
+        }
+        .star-item .level {
+            color: #FFFFFF;
+        }
+
+        /* ===== COORDINATES ===== */
+        #coordinates {
+            position: absolute;
+            bottom: 80px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.7);
