@@ -8,3 +8,4 @@ it has arch.mc already on
 if u only want multiplayer client multiplayer if u want singleplayer and multiplayer click singleplayer 
 but ye any complaints tell me on arch.mc I'll try to make some tweaks 
 but ye its basically done
+sorry client link is https://og-client.vercal.app 
